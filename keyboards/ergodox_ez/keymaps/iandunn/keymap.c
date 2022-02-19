@@ -1,9 +1,20 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 
+// maybe move this to dotfiles? don't want it in official qmk b/c have to pr every little change?
+// but do want it saved it git
+// but worried fork will be deleted
+
 // Use callum-oakley's one-shot implementation, to avoid OSM bug in stock firmware.
 // See https://github.com/qmk/qmk_firmware/issues/3963
 #include "../../../users/callum/oneshot.h"
+
+// this has to come before `keycodes` and `process_record_user`
+enum custom_keycodes {
+    RGB_SLD = EZ_SAFE_RANGE,
+    ST_MACRO_0,
+    ST_MACRO_1,
+};
 
 enum keycodes {
     OS_SHFT = SAFE_RANGE,
@@ -52,19 +63,14 @@ oneshot_state os_cmd_state = os_up_unqueued;
 #define BP_NDSH_MAC ALGR(KC_8)
 #define SE_SECT_MAC ALGR(KC_6)
 
-enum custom_keycodes {
-    RGB_SLD = EZ_SAFE_RANGE,
-    ST_MACRO_0,
-    ST_MACRO_1,
-};
-
+// tmp replaced oscmd w/ KC_RGUI so can use kb while macros fucked
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_ergodox_pretty(
         KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_6,                                           KC_TRANSPARENT, KC_7,           KC_8,           KC_9,           KC_0,           KC_MINUS,       KC_EQUAL,
         KC_GRAVE,       KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_LCBR,                                        KC_RCBR,        KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCOLON,      KC_BSLASH,
         KC_TAB,         KC_A,           KC_R,           KC_S,           KC_T,           KC_D,                                                                           KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           KC_QUOTE,
         OS_SHFT,  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OS_SHFT,
-        OS_CTRL,  KC_TRANSPARENT, KC_TRANSPARENT, OS_ALT,  OS_CMD,                                                                                                  OS_CMD,  OS_ALT,  KC_TRANSPARENT, KC_TRANSPARENT, OS_CTRL,
+        OS_CTRL,  KC_TRANSPARENT, KC_TRANSPARENT, OS_ALT,  OS_CMD,                                                                                                  KC_LGUI,  OS_ALT,  KC_TRANSPARENT, KC_TRANSPARENT, OS_CTRL,
                                                                                                     OSL(2),         KC_PGUP,        KC_LEFT,        KC_RIGHT,
                                                                                                                     KC_PGDOWN,      KC_UP,
                                                                                     KC_BSPACE,      OSL(1),         KC_DELETE,      KC_DOWN,        KC_ENTER,       KC_SPACE
@@ -119,24 +125,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         keycode, record
     );
 
-//  switch (keycode) {
+// can lower the delay?
+ // setup a constant for it instead of hardcoding and repeating
+  switch (keycode) {
+//  case ST_MACRO_0:
+//        if (record->event.pressed) {
+//          //SEND_STRING("---------------------");
+//          SEND_STRING("--");  // tmp fewer to see in keytester
+//        }
+//    break;
+
 //    case ST_MACRO_0:
 //        if (record->event.pressed) {
 //          SEND_STRING(SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS));
 //        }
 //    break;
-//
+
 //    case ST_MACRO_1:
 //        if (record->event.pressed) {
 //          SEND_STRING(SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_SPACE) SS_DELAY(100) SS_TAP(X_LBRACKET) SS_DELAY(100) SS_TAP(X_SPACE) SS_DELAY(100) SS_TAP(X_RBRACKET));
 //        }
 //    break;
-//  }
+  }
 // tmp disabled b/c confilct w/ osm
 // maybe need to understand how this qmk callback works better in order to get why conflict
 // not caused by either one on its own, its some more kind of fundamental conflict
 
-    return true;
+// cmd triggers ---- macro
+// other mods dont trigger anything
+// chek macro works on layer
+// the---- does not work on layer
+
+
+    return true; // Continue processing the key event
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
