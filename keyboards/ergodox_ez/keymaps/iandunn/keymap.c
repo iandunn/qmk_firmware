@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
-#include "version.h"
 #include <print.h> // Used when debugging.
+#include "version.h"
 
 // Use callum-oakley's one-shot implementation, to avoid OSM bug in stock firmware.
 // See https://github.com/qmk/qmk_firmware/issues/3963
@@ -22,20 +22,20 @@ enum keycodes {
 
 // Uncomment to see output in QMK Toolkit.
 // Mac's on-screen keyboard viewer is also useful, and works even when not active application.
-void keyboard_post_init_user(void) {
+void keyboard_post_init_user( void ) {
 	//debug_enable=true;
 	//debug_matrix=true;
 	//debug_keyboard=true;
 	//debug_mouse=true;
 }
 
-bool is_oneshot_cancel_key(uint16_t keycode) {
+bool is_oneshot_cancel_key( uint16_t keycode ) {
 	// @todo Add mouse inputs if possible. Real mouse, not mouse keys on keyboard.
 	return KC_ESCAPE == keycode;
 }
 
-bool is_oneshot_ignored_key(uint16_t keycode) {
-	switch (keycode) {
+bool is_oneshot_ignored_key( uint16_t keycode ) {
+	switch ( keycode ) {
 		case KC_LSFT:
 		case OS_SHFT:
 		case OS_CTRL:
@@ -116,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	),
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+bool process_record_user( uint16_t keycode, keyrecord_t *record ) {
 	// Turn one-shot mods on/off.
 	update_oneshot( &os_shft_state, KC_LSFT, OS_SHFT, keycode, record );
 	update_oneshot( &os_ctrl_state, KC_LCTL, OS_CTRL, keycode, record );
@@ -142,14 +142,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	return true; // Continue processing the key event
 }
 
-uint32_t layer_state_set_user(uint32_t state) {
-	uint8_t layer = biton32(state);
+uint32_t layer_state_set_user( uint32_t state ) {
+	uint8_t layer = biton32( state );
 	ergodox_board_led_off();
 	ergodox_right_led_1_off();
 	ergodox_right_led_2_off();
 	ergodox_right_led_3_off();
 
-	switch (layer) {
+	switch ( layer ) {
 		case 1:
 			ergodox_right_led_1_on();
 		break;
