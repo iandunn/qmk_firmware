@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
+#include <print.h> // Used when debugging.
 
 // Use callum-oakley's one-shot implementation, to avoid OSM bug in stock firmware.
 // See https://github.com/qmk/qmk_firmware/issues/3963
@@ -19,7 +20,17 @@ enum keycodes {
 	OS_CMD,
 };
 
+// Uncomment to see output in QMK Toolkit.
+// Mac's on-screen keyboard viewer is also useful, and works even when not active application.
+void keyboard_post_init_user(void) {
+	//debug_enable=true;
+	//debug_matrix=true;
+	//debug_keyboard=true;
+	//debug_mouse=true;
+}
+
 bool is_oneshot_cancel_key(uint16_t keycode) {
+	// @todo Add mouse inputs if possible. Real mouse, not mouse keys on keyboard.
 	return KC_ESCAPE == keycode;
 }
 
@@ -92,6 +103,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 																				KC_TRANSPARENT, KC_TRANSPARENT,
 												KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
 	),
+
 	[3] = LAYOUT_ergodox_pretty(
 		KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
 		KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
@@ -101,8 +113,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 																KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
 																				KC_TRANSPARENT, KC_TRANSPARENT,
 												KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
-		),
-	};
+	),
+};
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	// Turn one-shot mods on/off.
