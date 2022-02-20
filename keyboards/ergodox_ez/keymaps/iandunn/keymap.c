@@ -1,50 +1,9 @@
 #include QMK_KEYBOARD_H
-#include "version.h"
-
-// maybe move this to dotfiles? don't want it in official qmk b/c have to pr every little change?
-// but do want it saved it git
-// but worried fork will be deleted
+#include "version.h" // do i still need this?
 
 // Use callum-oakley's one-shot implementation, to avoid OSM bug in stock firmware.
 // See https://github.com/qmk/qmk_firmware/issues/3963
 #include "../../../users/callum/oneshot.h"
-
-// this has to come before `keycodes` and `process_record_user`
-enum custom_keycodes {
-    RGB_SLD = EZ_SAFE_RANGE,
-    ST_MACRO_0,
-    ST_MACRO_1,
-};
-
-enum keycodes {
-    OS_SHFT = SAFE_RANGE,
-    OS_CTRL,
-    OS_ALT,
-    OS_CMD,
-};
-
-bool is_oneshot_cancel_key(uint16_t keycode) {
-    return KC_ESCAPE == keycode;
-}
-
-bool is_oneshot_ignored_key(uint16_t keycode) {
-    switch (keycode) {
-        case KC_LSFT:
-        case OS_SHFT:
-        case OS_CTRL:
-        case OS_ALT:
-        case OS_CMD:
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-oneshot_state os_shft_state = os_up_unqueued;
-oneshot_state os_ctrl_state = os_up_unqueued;
-oneshot_state os_alt_state = os_up_unqueued;
-oneshot_state os_cmd_state = os_up_unqueued;
 
 #define KC_MAC_UNDO LGUI(KC_Z)
 #define KC_MAC_CUT LGUI(KC_X)
@@ -63,14 +22,49 @@ oneshot_state os_cmd_state = os_up_unqueued;
 #define BP_NDSH_MAC ALGR(KC_8)
 #define SE_SECT_MAC ALGR(KC_6)
 
-// tmp replaced oscmd w/ KC_RGUI so can use kb while macros fucked
+void keyboard_post_init_user(void) {
+  debug_enable=true; // is this needed when rulefile has constant?
+//  need someithing else in here? not seeing output in qmktoolbox anymore
+}
+
+// This has to come before `keycodes` and `process_record_user()`.
+enum custom_keycodes {
+    RGB_SLD = EZ_SAFE_RANGE,
+    ST_MACRO_0,
+    ST_MACRO_1,
+};
+
+enum keycodes {
+    OS_SHFT = SAFE_RANGE,
+    OS_CTRL,
+    OS_ALT,
+    OS_CMD,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_ergodox_pretty(
         KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_6,                                           KC_TRANSPARENT, KC_7,           KC_8,           KC_9,           KC_0,           KC_MINUS,       KC_EQUAL,
         KC_GRAVE,       KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_LCBR,                                        KC_RCBR,        KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCOLON,      KC_BSLASH,
         KC_TAB,         KC_A,           KC_R,           KC_S,           KC_T,           KC_D,                                                                           KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           KC_QUOTE,
-        OS_SHFT,  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OS_SHFT,
-        OS_CTRL,  KC_TRANSPARENT, KC_TRANSPARENT, OS_ALT,  OS_CMD,                                                                                                  KC_LGUI,  OS_ALT,  KC_TRANSPARENT, KC_TRANSPARENT, OS_CTRL,
+
+        // callum oneshot
+//        OS_SHFT,  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OS_SHFT,
+//        OS_CTRL,  KC_TRANSPARENT, KC_TRANSPARENT, OS_ALT, OS_CMD,                                                                                                  OS_CMD,  OS_ALT,  KC_TRANSPARENT, KC_TRANSPARENT, OS_CTRL,
+
+        // native oneshot
+        OSM(MOD_LSFT),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OSM(MOD_RSFT),
+        OSM(MOD_LCTL),  KC_TRANSPARENT, KC_TRANSPARENT, OSM(MOD_LALT),  OSM(MOD_LGUI),                                                                                                  OSM(MOD_RGUI),  OSM(MOD_RALT),  KC_TRANSPARENT, KC_TRANSPARENT, OSM(MOD_RCTL),
+
+        // native w/ callum cmd - macros work here?
+         // but then stops all input after a few minutes? but that happens w/ other stuff too?
+//        OSM(MOD_LSFT),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OSM(MOD_RSFT),
+//        OSM(MOD_LCTL),  KC_TRANSPARENT, KC_TRANSPARENT, OSM(MOD_LALT),  OS_CMD,                                                                                                  OS_CMD,  OSM(MOD_RALT),  KC_TRANSPARENT, KC_TRANSPARENT, OSM(MOD_RCTL),
+
+// callum oneshot w/ native cmd
+//        OS_SHFT,  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_LBRACKET,                                    KC_RBRACKET,    KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       OS_SHFT,
+//        OS_CTRL,  KC_TRANSPARENT, KC_TRANSPARENT, OS_ALT, OSM(MOD_LGUI),                                                                                                  OSM(MOD_RGUI),  OS_ALT,  KC_TRANSPARENT, KC_TRANSPARENT, OS_CTRL,
+
+
                                                                                                     OSL(2),         KC_PGUP,        KC_LEFT,        KC_RIGHT,
                                                                                                                     KC_PGDOWN,      KC_UP,
                                                                                     KC_BSPACE,      OSL(1),         KC_DELETE,      KC_DOWN,        KC_ENTER,       KC_SPACE
@@ -107,7 +101,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 
+
+bool is_oneshot_cancel_key(uint16_t keycode) {
+    return KC_ESCAPE == keycode;
+}
+
+bool is_oneshot_ignored_key(uint16_t keycode) {
+    switch (keycode) {
+        // these keys wont cancel the oneshot, so should have mods here
+        case OS_SHFT:
+        case OS_CTRL:
+        case OS_ALT:
+        case OS_CMD:
+            return true;
+
+        default:
+            // all other keys (like normal keys, A _ 4 etc) will be used and then cancel the oneshot
+            return false;
+    }
+}
+
+oneshot_state os_shft_state = os_up_unqueued;
+oneshot_state os_ctrl_state = os_up_unqueued;
+oneshot_state os_alt_state = os_up_unqueued;
+oneshot_state os_cmd_state = os_up_unqueued;
+
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // If console is enabled, it will print the matrix position and status of each key pressed
+//    #ifdef CONSOLE_ENABLE
+//        uprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
+//    #endif
+
+
     update_oneshot(
         &os_shft_state, KC_LSFT, OS_SHFT,
         keycode, record
@@ -125,39 +151,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         keycode, record
     );
 
-// can lower the delay?
- // setup a constant for it instead of hardcoding and repeating
-  switch (keycode) {
-//  case ST_MACRO_0:
-//        if (record->event.pressed) {
-//          //SEND_STRING("---------------------");
-//          SEND_STRING("--");  // tmp fewer to see in keytester
-//        }
-//    break;
 
-//    case ST_MACRO_0:
-//        if (record->event.pressed) {
-//          SEND_STRING(SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_MINUS));
-//        }
-//    break;
+      switch (keycode) {
+            case ST_MACRO_0:
+                if (record->event.pressed) {
+                  //SEND_STRING("---------------------");
+                  SEND_STRING("a");  // tmp less annoying until fixed
+                    // everything works fine if nothing is sent, right? it must. so that means something is already active?
+                    // maybe layer switching causes a problem?
 
-//    case ST_MACRO_1:
-//        if (record->event.pressed) {
-//          SEND_STRING(SS_TAP(X_MINUS) SS_DELAY(100) SS_TAP(X_SPACE) SS_DELAY(100) SS_TAP(X_LBRACKET) SS_DELAY(100) SS_TAP(X_SPACE) SS_DELAY(100) SS_TAP(X_RBRACKET));
-//        }
-//    break;
-  }
-// tmp disabled b/c confilct w/ osm
-// maybe need to understand how this qmk callback works better in order to get why conflict
-// not caused by either one on its own, its some more kind of fundamental conflict
+                   printf("what does the state of various things look like? oneshot is active at this point but it shouldn't be, right?");
+                }
+            break;
 
-// cmd triggers ---- macro
-// other mods dont trigger anything
-// chek macro works on layer
-// the---- does not work on layer
+            case ST_MACRO_1:
+                if (record->event.pressed) {
+                  SEND_STRING("- [ ] ");
+                }
+            break;
 
+            // clear native oneshot for use when callum not working
+//            case KC_ESC:
+//                if (!record->event.pressed) { // keyup
+//                    //clear_mods();
+//                    clear_oneshot_mods(); // maybe more specefic, but only works in layer state func?
+//                }
+//            break;
 
-    return true; // Continue processing the key event
+    }
+
+    return true; // Continue processing the key event.
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
