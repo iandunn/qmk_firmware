@@ -9,8 +9,9 @@
 // This has to come before `keycodes` and `process_record_user`.
 enum custom_keycodes {
 	RGB_SLD = EZ_SAFE_RANGE,
-	ST_MACRO_0,
+	ST_MACRO_0, // Unused, but must exist to avoid macro one-shot conflict.
 	ST_MACRO_1,
+	ST_MACRO_2,
 };
 
 enum keycodes {
@@ -83,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	),
 
 	[1] = LAYOUT_ergodox_pretty(
-		KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_BTN3,	 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_PGUP,		KC_MS_ACCEL0,   KC_MS_ACCEL1,   KC_MS_ACCEL2,   ST_MACRO_0,	 ST_MACRO_1,
+		KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_BTN3,	 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_PGUP,		KC_MS_ACCEL0,   KC_MS_ACCEL1,   KC_MS_ACCEL2,   ST_MACRO_1,	 ST_MACRO_2,
 		KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_BTN1,	 KC_MS_UP,	   KC_MS_BTN2,	 KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_MS_WH_DOWN,  RGUI(RSFT(KC_LBRACKET)),KC_UP,		  RGUI(RSFT(KC_RBRACKET)),KC_HOME,		KC_TRANSPARENT,
 		KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_LEFT,	 KC_MS_DOWN,	 KC_MS_RIGHT,	KC_TRANSPARENT,																 KC_MS_WH_UP,	KC_LEFT,		KC_DOWN,		KC_RIGHT,	   KC_END,		 KC_TRANSPARENT,
 		KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,								 KC_TRANSPARENT, KC_PGDOWN,	  RGUI(KC_LBRACKET),KC_TRANSPARENT, RGUI(KC_RBRACKET),KC_TRANSPARENT, KC_TRANSPARENT,
@@ -124,17 +125,15 @@ bool process_record_user( uint16_t keycode, keyrecord_t *record ) {
 	update_oneshot( &os_cmd_state, KC_LCMD, OS_CMD,	keycode, record	);
 
 	switch (keycode) {
-		// @todo tmp disabled b/c confilct w/ callum oneshot implementation.
-		case ST_MACRO_0:
+		case ST_MACRO_1:
 			if (record->event.pressed) {
-				//SEND_STRING("---------------------");
-				//SEND_STRING("a");  // tmp less annoying when macro bug happens
+				SEND_STRING("-------------------------------");
 			}
 		break;
 
-		case ST_MACRO_1:
+		case ST_MACRO_2:
 			if (record->event.pressed) {
-				//SEND_STRING("- [ ] ");
+				SEND_STRING("- [ ] ");
 			}
 		break;
 	}
