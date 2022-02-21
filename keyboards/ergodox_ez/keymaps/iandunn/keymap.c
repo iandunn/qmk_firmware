@@ -130,13 +130,13 @@ bool process_record_user( uint16_t keycode, keyrecord_t *record ) {
 	switch (keycode) {
 		case ST_MACRO_1:
 			if (record->event.pressed) {
-				SEND_STRING( '-------------------------------' );
+				SEND_STRING( "-------------------------------" );
 			}
 		break;
 
 		case ST_MACRO_2:
 			if (record->event.pressed) {
-				SEND_STRING( '- [ ] ' );
+				SEND_STRING( "- [ ] " );
 			}
 		break;
 	}
