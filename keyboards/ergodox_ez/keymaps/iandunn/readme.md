@@ -6,3 +6,4 @@
 * [Colemak](https://colemak.com/)
 * [One shot modifiers](/docs/one_shot_keys.md), using [Callum Oakley's implementation](/users/callum/readme.md)
 * Additional layers for navigation & media
+* Remove some hard to reach keys
