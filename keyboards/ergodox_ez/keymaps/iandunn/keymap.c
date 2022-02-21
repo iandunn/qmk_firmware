@@ -1,6 +1,9 @@
 #include QMK_KEYBOARD_H
-#include <print.h> // Used when debugging.
 #include "version.h"
+
+#ifdef CONSOLE_ENABLE
+	#include <print.h>
+#endif
 
 // Use callum-oakley's one-shot implementation, to avoid OSM bug in stock firmware.
 // See https://github.com/qmk/qmk_firmware/issues/3963
