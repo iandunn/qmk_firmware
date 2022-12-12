@@ -354,7 +354,7 @@ void process_action(keyrecord_t *record, action_t action) {
                         if (event.pressed) {
                             if (tap_count == 0) {
                                 dprint("MODS_TAP: Oneshot: 0\n");
-                                register_mods(mods | get_oneshot_mods());
+                                register_mods(mods);
                             } else if (tap_count == 1) {
                                 dprint("MODS_TAP: Oneshot: start\n");
                                 set_oneshot_mods(mods | get_oneshot_mods());
@@ -366,7 +366,7 @@ void process_action(keyrecord_t *record, action_t action) {
                                 register_mods(mods);
 #        endif
                             } else {
-                                register_mods(mods | get_oneshot_mods());
+                                register_mods(mods);
                             }
                         } else {
                             if (tap_count == 0) {
